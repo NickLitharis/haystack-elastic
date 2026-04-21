@@ -1,58 +1,57 @@
-# Haystack Search & Elasticsearch Index
+# Haystack & Elasticsearch Q&A Search
 
-This project focuses on scraping a website containing Q&A data and utilizing either Haystack or Elasticsearch index to search for answers and return the best possible responses.
+Scrapes Q&A data from the web and builds two search pipelines on top of it — one keyword-based (Elasticsearch) and one semantic (Haystack with embeddings).
 
-## Technologies Used
-- API
-- Python
-- Google Colab
-- Haystack
-- Elasticsearch
+Built as a university project in collaboration with [@voltmaister](https://github.com/voltmaister).
 
-## Introduction
+![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python)
+![Haystack](https://img.shields.io/badge/Haystack-FAQ_Pipeline-00A1E0)
+![Elasticsearch](https://img.shields.io/badge/Elasticsearch-7.x-005571?logo=elasticsearch&logoColor=white)
 
-The project involves web scraping a targeted website to extract valuable Q&A data. Subsequently, we employ either Haystack or Elasticsearch to index this data for efficient search operations.
+---
 
-## Setup and Installation
+## What It Does
 
-1. **Clone the Repository:**
-   ```
-   git clone <repository_url>
-   cd <repository_directory>
-   ```
+1. **Scrapes** a Q&A website and stores question/answer pairs as JSON
+2. **Indexes** the data into Elasticsearch
+3. **Searches** using two approaches side by side:
 
-2. **Install Dependencies:**
-   ```
-   pip install -r requirements.txt
-   ```
+| Notebook | Approach | How It Works |
+|---|---|---|
+| `Elastic_Search_Index.ipynb` | Keyword search | Elasticsearch BM25 query against the `q&a` index |
+| `Haystack_search.ipynb` | Semantic search | `FAQPipeline` + `EmbeddingRetriever` — finds answers by embedding similarity, not keyword overlap |
 
-3. **Haystack Setup (or Elasticsearch Setup):**
-   - For Haystack setup, follow the instructions in the Haystack documentation.
-   - For Elasticsearch setup, follow the Elasticsearch documentation.
+The semantic pipeline returns the top-5 most relevant answers for any user query using vector embeddings stored in `ElasticsearchDocumentStore`.
 
-4. **Run the Project:**
-   - Execute the main script to scrape the website and perform searches using the chosen technology.
-   python main.py
+---
 
-## Usage
+## Setup
 
-1. **Scraping:**
-   - Run the web scraping script to extract Q&A data from the target website.
+### Prerequisites
+- Elasticsearch 7.x running on `localhost:9200`
+- Python 3.8+
 
-2. **Indexing:**
-   - Use Haystack or Elasticsearch to index the scraped Q&A data for efficient searching.
+### Install dependencies
 
-3. **Searching:**
-   - Utilize the search capabilities of Haystack or Elasticsearch to search for answers within the indexed data.
+```bash
+pip install farm-haystack elasticsearch==7.*
+```
 
-## Contributing
+### Run
 
-If you wish to contribute to this project, please follow these steps:
+1. Open `Elastic_Search_Index.ipynb` — scrapes and indexes the Q&A data into Elasticsearch
+2. Open `Haystack_search.ipynb` — runs the semantic FAQ pipeline against the indexed data
 
-1. Fork the repository and create a new branch.
-2. Make your changes and thoroughly test them.
-3. Create a pull request, explaining the changes you have made.
+Both notebooks are designed to run on Google Colab.
 
-## License
+---
 
-This project is licensed under the MIT License.
+## Pipeline Architecture
+
+```
+Web Scraping → JSON → Elasticsearch Index
+                              ↓
+              EmbeddingRetriever (semantic similarity)
+                              ↓
+                     FAQPipeline → Top-K Answers
+```
