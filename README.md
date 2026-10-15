@@ -35,7 +35,7 @@ The semantic pipeline returns the top-5 most relevant answers for any user query
 ### Install dependencies
 
 ```bash
-pip install farm-haystack elasticsearch==7.*
+uv sync
 ```
 
 ### Run
@@ -97,7 +97,7 @@ itself doesn't have to be taken on faith.
 producing these numbers needs a local run:
 
 ```bash
-pip install farm-haystack "elasticsearch==7.*"
+uv sync
 # 1. Elasticsearch 7.x on localhost:9200
 # 2. run both notebooks to populate the index
 # 3. label ~20 queries with their answering document ids
